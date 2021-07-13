@@ -1,10 +1,27 @@
 import LottieView from "lottie-react-native";
-import React from "react";
-import { View, Dimensions } from "react-native";
+import React, { useRef, useState } from "react";
+import { Dimensions, View } from "react-native";
 
 const { width: WIDTH_SCREEN } = Dimensions.get("screen");
+const jsonArray = [
+  require("./animations/json_pin_jump.json"),
+  require("./animations/json_twitter_heart.json"),
+  require("./animations/json_water_melon.json"),
+];
 
 export default function App() {
+  const [index, setIndex] = useState(0);
+  const lottieViewRef = useRef<LottieView>(null);
+
+  const _onAnimationFinish = () => {
+    setIndex(index + 1);
+    lottieViewRef.current?.reset();
+  };
+
+  if (index >= jsonArray.length) {
+    return null;
+  }
+
   return (
     <View
       style={{
@@ -15,7 +32,9 @@ export default function App() {
       }}
     >
       <LottieView
-        source={require("./animations/json_pin_jump.json")}
+        key={`LottieView${index}`}
+        ref={lottieViewRef}
+        source={jsonArray[index]}
         style={{
           width: WIDTH_SCREEN,
           height: WIDTH_SCREEN,
@@ -23,37 +42,9 @@ export default function App() {
           zIndex: 1,
         }}
         autoPlay={true}
-        loop={true}
         speed={1}
-        onAnimationFinish={console.log(`Animation 1 is finished.`)}
-      />
-
-      <LottieView
-        source={require("./animations/json_twitter_heart.json")}
-        style={{
-          width: WIDTH_SCREEN,
-          height: WIDTH_SCREEN,
-          position: "absolute",
-          zIndex: 2,
-        }}
-        autoPlay={true}
-        loop={true}
-        speed={1}
-        onAnimationFinish={console.log(`Animation 2 is finished.`)}
-      />
-
-      <LottieView
-        source={require("./animations/json_water_melon.json")}
-        style={{
-          width: WIDTH_SCREEN,
-          height: WIDTH_SCREEN,
-          position: "absolute",
-          zIndex: 3,
-        }}
-        autoPlay={true}
-        loop={true}
-        speed={1}
-        onAnimationFinish={console.log(`Animation 3 is finished.`)}
+        loop={false}
+        onAnimationFinish={_onAnimationFinish}
       />
     </View>
   );
